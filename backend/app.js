@@ -45,7 +45,7 @@ app.use(function(err, req, res, next) {
 
 /////////////从此处开始为websocket部分/////////////////////
 //创建一个websocket连接，端口为8080
-var WebSocketServer = require('ws').Server,wss = new WebSocketServer({port: 8080});
+var WebSocketServer = require('ws').Server,wss = new WebSocketServer({port: 8081});
  
 // 创建websocket连接池，clients存储所有正在连接的websocket，name为用户名
 var clients = [];
