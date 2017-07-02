@@ -77,11 +77,11 @@ wss.on('connection', function(ws) {
 			clients.forEach(function(ws_temp){
 
 				//进行判断，如果遍历的当前websocket连接(ws_temp)与触发消息时间的websocket连接(ws)不为同一个，则发送内容
-				if(ws_temp.ws !== ws) {
+				//if(ws_temp.ws !== ws) {
 
 					//使用ws_temp中的ws来获取连接，并进行发送消息
 					ws_temp.ws.send(message);
-				}
+				//}
 			})
 		}
 	});

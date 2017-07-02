@@ -1,23 +1,19 @@
 <template>
-  <div id="app">
-    <img src="./assets/logo.png">
-    <router-view></router-view>
-  </div>
+<div>
+  <v-websocket></v-websocket>
+</div>
 </template>
 
-<script>
+<script type="text/esmascript-6">
+import websocket from './components/websocket/websocket.vue';
+
 export default {
-  name: 'app'
-}
+  components: {
+    'v-websocket': websocket
+  }
+};
 </script>
 
-<style>
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
+<style lang="stylus" rel="stylesheet/stylus">
+
 </style>
