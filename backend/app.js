@@ -50,6 +50,7 @@ var WebSocketServer = require('ws').Server,wss = new WebSocketServer({port: 8081
 // 创建websocket连接池，clients存储所有正在连接的websocket，name为用户名
 var clients = [];
 var name="";
+var ws_save = false;
 
 //target为发送消息是否有指定用户
 var target="";
@@ -59,19 +60,38 @@ wss.on('connection', function(ws) {
 
 	//target目标进行赋值，如果消息为群发消息无target，则赋值为“”,后期增加ws测试客户端后此行代码删除
 	target="";
-
+/*
 	//生成json字符串，并且push进连接池，json格式中的ws为websocket连接，target为目标用户
 	var str = {"ws":ws,"target":target};
 	clients.push(str);
 
 	//显示当前连接池中的连接数量
 	console.log("add a websocket websockets total:"+clients.length);
+*/
 
 	//当监听到有消息过来的时候触发下段代码
 	ws.on('message', function(message) {
 
+		console.log(message);
+		message = JSON.parse(message);
+		for(var i =0; i<clients.length;i++){
+			if(clients[i].name == message.sender){
+				ws_save = true;
+				console.log("this ws has connect");
+			}
+		}
+
+		if(ws_save == false) {
+			var str = {"ws":ws,"name":message.sender};
+			clients.push(str);
+
+			//显示当前连接池中的连接数量
+			console.log("add a websocket websockets total:"+clients.length);
+		}
+
+		//console.log(message.target);
 		//当前还没完成websocket的测试客户端，因此target直接进行的赋值，在测试客户端中使用meaage.data.target获取目标用户
-		if(target === ""){
+		if(message.target === "all"){
 
 			//遍历整个连接池，查询是否有符合条件的websocket连接
 			clients.forEach(function(ws_temp){
@@ -79,8 +99,10 @@ wss.on('connection', function(ws) {
 				//进行判断，如果遍历的当前websocket连接(ws_temp)与触发消息时间的websocket连接(ws)不为同一个，则发送内容
 				//if(ws_temp.ws !== ws) {
 
+					var send_content = JSON.stringify(message.content);
+					console.log(send_content);
 					//使用ws_temp中的ws来获取连接，并进行发送消息
-					ws_temp.ws.send(message);
+					ws_temp.ws.send(send_content);
 				//}
 			})
 		}

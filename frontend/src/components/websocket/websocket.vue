@@ -2,17 +2,24 @@
 <div class="background-wrapper">
 	<div class="content-wrapper">
 		<div class="ip-wrapper">
-			<input type="text" name="addr_id">
+			ip地址（当前默认127.0.0.1）<input type="text" name="addr_id">
 		</div>
 		<div class="port-wrapper">
-			<input type="text" name="port_id">
+			端口号（当前默认8081）<input type="text" name="port_id">
+		</div>
+		<div class="info-wrapper">
+			本机编号(连接的时候需要填写)<input type="text" id="sender_id">
+		</div>
+		<div class="target-wrapper">
+			发送目标<input type="text" id="target_id">
 		</div>
 		<div class="send-content">
-			<textarea id="send-content-id"></textarea>
+			<div>发送内容</div><textarea id="send-content-id"></textarea>
 		</div>
 		<div class="receive-content">
+			收到的内容
 			<div>
-				{{content}}
+				{{receive_content}}
 			</div>
 		</div>
 		<button @click="connect">连接</button>
@@ -27,7 +34,11 @@ export default {
 		return {
 			ws_server: '',
 			ws_cube: '',
-			content: "暂时无内容"
+			receive_content: "暂时无内容",
+			sender: "",
+			target: "",
+			content: "",
+			send_content: ""
 		}
 	},
 	methods: {
@@ -44,6 +55,7 @@ export default {
 				if(msg.replace(/(^s*)|(s*$)/g, "").length != 0){
 					msg = JSON.parse(msg);
 					console.log(msg);
+					self.receive_content = msg;
 					/*if(msg.HEAD.record_type=="SYNI") {
 						;
 					}*/
@@ -53,8 +65,22 @@ export default {
 		send() {
 			let send_content = document.getElementById("send-content-id");
 			this.content = send_content.value;
-			this.content = JSON.stringify(this.content);
-			this.ws_server.send(this.content);
+			//console.log(this.content);
+
+			let sender_name = document.getElementById("sender_id");
+			this.sender = sender_name.value;
+			//console.log(this.sender);
+
+			let target_name = document.getElementById("target_id");
+			this.target = target_name.value;
+			//console.log(this.target);
+
+			this.send_content = {sender:this.sender,target:this.target,content:this.content};
+			this.send_content = JSON.stringify(this.send_content);
+
+			console.log(this.send_content);
+
+			this.ws_server.send(this.send_content);
 		}
 	}
 };
