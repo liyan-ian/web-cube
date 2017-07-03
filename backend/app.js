@@ -52,14 +52,8 @@ var clients = [];
 var name="";
 var ws_save = false;
 
-//target为发送消息是否有指定用户
-var target="";
-
 //监听websocket连接，当监听到创建新的websocket连接以后走下段代码
 wss.on('connection', function(ws) {
-
-	//target目标进行赋值，如果消息为群发消息无target，则赋值为“”,后期增加ws测试客户端后此行代码删除
-	target="";
 /*
 	//生成json字符串，并且push进连接池，json格式中的ws为websocket连接，target为目标用户
 	var str = {"ws":ws,"target":target};
@@ -72,7 +66,9 @@ wss.on('connection', function(ws) {
 	//当监听到有消息过来的时候触发下段代码
 	ws.on('message', function(message) {
 
+		console.log("ws.on message");
 		console.log(message);
+
 		message = JSON.parse(message);
 		for(var i =0; i<clients.length;i++){
 			if(clients[i].name == message.sender){
@@ -89,7 +85,8 @@ wss.on('connection', function(ws) {
 			console.log("add a websocket websockets total:"+clients.length);
 		}
 
-		//console.log(message.target);
+		ws_save = false;
+
 		//当前还没完成websocket的测试客户端，因此target直接进行的赋值，在测试客户端中使用meaage.data.target获取目标用户
 		if(message.target === "all"){
 
@@ -104,6 +101,17 @@ wss.on('connection', function(ws) {
 					//使用ws_temp中的ws来获取连接，并进行发送消息
 					ws_temp.ws.send(send_content);
 				//}
+			})
+		}
+		else {
+			clients.forEach(function(ws_temp){
+				var send_content = JSON.stringify(message.content);
+				console.log(send_content);
+
+				if(message.target == ws_temp.name){
+					//使用ws_temp中的ws来获取连接，并进行发送消息
+					ws_temp.ws.send(send_content);
+				}
 			})
 		}
 	});

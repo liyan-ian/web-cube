@@ -18,9 +18,13 @@
 		</div>
 		<div class="receive-content">
 			收到的内容
-			<div>
-				{{receive_content}}
-			</div>
+			<ul>
+				<li v-for="content in contentList">
+					<div>
+						{{content.msg}}
+					</div>				
+				</li>
+			</ul>
 		</div>
 		<button @click="connect">连接</button>
 		<button @click="send">发送</button>
@@ -34,7 +38,11 @@ export default {
 		return {
 			ws_server: '',
 			ws_cube: '',
-			receive_content: "暂时无内容",
+			contentList: [{
+  				msg: "1"
+  			},{
+  				msg:"2"
+  			}],
 			sender: "",
 			target: "",
 			content: "",
@@ -54,8 +62,9 @@ export default {
 				//console.log(msg);
 				if(msg.replace(/(^s*)|(s*$)/g, "").length != 0){
 					msg = JSON.parse(msg);
-					console.log(msg);
-					self.receive_content = msg;
+					self.contentList.push({
+						msg:msg
+					})
 					/*if(msg.HEAD.record_type=="SYNI") {
 						;
 					}*/
